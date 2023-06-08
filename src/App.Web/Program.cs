@@ -1,8 +1,7 @@
+using App.Core.Interfaces;
 using App.Web.Data;
 using App.Web.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using App.Core.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,13 +12,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityAppUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityAppUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
 
-
-builder.Services.AddSingleton<IMovieLikeRepository, MovieLikeRepository>();
+builder.Services.AddScoped<IMovieLikeRepository, MovieLikeRepository>();
 
 var app = builder.Build();
 

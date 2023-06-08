@@ -1,4 +1,5 @@
-﻿using App.Core.Entities.AppUserAggregate;
+﻿using App.Core.Entities;
+using App.Core.Entities.AppUserAggregate;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,5 +13,7 @@ namespace App.Web.Data
         }
 
         public DbSet<AppUser> AppUsers { get; set;}
+        public DbSet<MovieLike> MovieLikes { get; set;}
+
     }
 }

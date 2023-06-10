@@ -80,7 +80,8 @@ public class RegisterModel : PageModel
 
             var user = new IdentityAppUser
             {
-                Email = Input.Email
+                Email = Input.Email,
+                UserName = Input.Email
             };
 
             var result = await _userManager.CreateAsync(user, Input.Password);
@@ -110,9 +111,7 @@ public class RegisterModel : PageModel
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                {
                     return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
-                }
 
                 await _signInManager.SignInAsync(user, false);
                 return LocalRedirect(returnUrl);

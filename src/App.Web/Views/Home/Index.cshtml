@@ -1,4 +1,4 @@
-﻿@model App.Services.Models.TmdbResponse
+﻿@model IEnumerable<App.Services.Models.TmdbResult>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -59,7 +59,7 @@
                         for (var slide = 0; slide <= 3; slide++)
                         {
                             <div class="row" style="padding-left: 15px;">
-                                @foreach (var movie in Model.results.Skip(slide * 4).Take(4))
+                                @foreach (var movie in Model.Skip(slide * 4).Take(4))
                                 {
                                     <!-- card -->
                                     <div class="col-6 col-sm-12 col-lg-6">

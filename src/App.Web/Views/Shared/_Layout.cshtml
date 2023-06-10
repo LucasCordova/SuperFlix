@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using App.Web.Identity
+
+@inject SignInManager<IdentityAppUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -47,6 +53,10 @@
                                     <a asp-controller="Home" asp-action="Index" class="header__nav-link">Home</a>
                                 </li>
                                 
+                            @if (SignInManager.IsSignedIn(User))
+                                {
+                                    <a asp-controller="MovieLikes" asp-action="Index" class="header__nav-link">Movie Like</a>
+                                }
 
                                 <!-- dropdown -->
                                 <li class="dropdown header__nav-item">

@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
 using App.Core.Entities.AppUserAggregate;
+using App.Core.Interfaces;
 using App.Web.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +20,7 @@ namespace App.Web.Areas.Identity.Pages.Account;
 
 public class RegisterModel : PageModel
 {
+    private readonly IAppUserRepository _appUserRepository;
     private readonly IEmailSender _emailSender;
     private readonly IUserEmailStore<IdentityAppUser> _emailStore;
     private readonly ILogger<RegisterModel> _logger;
@@ -31,7 +33,8 @@ public class RegisterModel : PageModel
         IUserStore<IdentityAppUser> userStore,
         SignInManager<IdentityAppUser> signInManager,
         ILogger<RegisterModel> logger,
-        IEmailSender emailSender)
+        IEmailSender emailSender,
+        IAppUserRepository appUserRepository)
     {
         _userManager = userManager;
         _userStore = userStore;
@@ -39,6 +42,7 @@ public class RegisterModel : PageModel
         _signInManager = signInManager;
         _logger = logger;
         _emailSender = emailSender;
+        _appUserRepository = appUserRepository;
     }
 
     /// <summary>
@@ -80,7 +84,8 @@ public class RegisterModel : PageModel
 
             var user = new IdentityAppUser
             {
-                Email = Input.Email
+                Email = Input.Email,
+                UserName = Input.Email
             };
 
             var result = await _userManager.CreateAsync(user, Input.Password);
@@ -89,7 +94,7 @@ public class RegisterModel : PageModel
             {
                 var appUser = new AppUser
                 {
-                    IdentityDbId = user.Id,
+                    IdentityDbId = user.Email,
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     DateOfBirth = Input.DateOfBirth
@@ -110,11 +115,12 @@ public class RegisterModel : PageModel
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                {
                     return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
-                }
 
                 await _signInManager.SignInAsync(user, false);
+
+                await _appUserRepository.Add(appUser);
+
                 return LocalRedirect(returnUrl);
             }
 

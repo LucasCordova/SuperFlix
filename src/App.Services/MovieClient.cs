@@ -6,7 +6,10 @@ namespace App.Services;
 public static class MovieClient
 {
     private const string Url = "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1";
-    private const string ApiKey = "YOUR_API_KEY";
+
+    private const string ApiKey =
+        "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYjZhMzkwYjdhZjU3N2NiMDIyNmExZDZmYjEzMDRhMyIsInN1YiI6IjVjZWM1YTc5YzNhMzY4MzVhNjFlMWUwNSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.2aaz-CpVyzFvZf8dMgr6GwWCX6WKiM486LUr4NHTkt4";
+
     private const string AuthString = $"Bearer {ApiKey}";
 
 

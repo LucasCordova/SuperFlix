@@ -4,10 +4,10 @@ namespace App.Core.Interfaces;
 
 public interface IAppUserRepository
 {
-    IEnumerable<AppUser> FindAll(); // Read
-    AppUser? GetByAppUserId(int id); // Read
-    AppUser? GetByIdentityUserId(string id); // Read
-    void Update(AppUser appUser); // Update
-    void Add(AppUser appUser); // Create
-    void Delete(int appUserId);
+    Task<IEnumerable<AppUser>> FindAll(); // Read
+    Task<AppUser?> GetByAppUserId(int id); // Read
+    Task<AppUser?> GetByIdentityUserId(string id); // Read
+    Task Update(AppUser appUser); // Update
+    Task Add(AppUser appUser); // Create
+    Task Delete(int appUserId);
 }

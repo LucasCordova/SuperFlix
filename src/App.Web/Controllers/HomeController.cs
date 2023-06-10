@@ -21,23 +21,24 @@ public class HomeController : Controller
         _userRepository = userRepository;
     }
 
-    public async Task<IActionResult> Index(int? likedMovieId)
+    public async Task<IActionResult> Index(int? id)
     {
-        if (likedMovieId is not null)
+        if (id is not null)
         {
             var userId = User.Identity?.Name;
 
             if (userId is null) return Redirect("/Identity/Account/Login");
 
-            var appUser = _userRepository.GetByIdentityUserId(userId);
-            if (appUser is not null)
-                _movieRepository.Add(new MovieLike { AppUserId = appUser.Id, MovieId = likedMovieId.Value });
+            var appUser = await _userRepository.GetByIdentityUserId(userId);
+
+            if (appUser is { }) // same as app != null, app is not null
+                await _movieRepository.Add(new MovieLike { AppUserId = appUser.Id, MovieId = id.Value });
         }
 
         var movies = await MovieClient.GetPopularMovies();
 
         // Filter out the movies already liked
-        var likedMovieIds = _movieRepository.FindAll().Select(m => m.MovieId);
+        var likedMovieIds = (await _movieRepository.FindAll()).Select(m => m.MovieId);
         var filteredMovies = movies?.results.Where(m => !likedMovieIds.Contains(m.id));
 
         return View(filteredMovies);

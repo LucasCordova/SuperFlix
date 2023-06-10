@@ -11,29 +11,35 @@ public class MovieLikeRepository : IMovieLikeRepository
     {
         _dbContext = dbContext;
     }
-    public void Add(MovieLike movieLike)
+
+    public Task Add(MovieLike movieLike)
     {
         _dbContext.MovieLikes.Add(movieLike);
         _dbContext.SaveChanges();
+
+        return Task.CompletedTask;
     }
 
-    public void Delete(int movieLikeId)
+    public async Task Delete(int movieLikeId)
     {
-        throw new NotImplementedException();
+        var movieLike = await GetByMovieLikeId(movieLikeId);
+        _dbContext.MovieLikes.Remove(movieLike);
+        await Task.FromResult(_dbContext.SaveChangesAsync());
     }
 
-    public IEnumerable<MovieLike> FindAll()
+    public Task<MovieLike?> GetByMovieLikeId(int id)
     {
-        return _dbContext.MovieLikes.ToList();
+        return Task.FromResult(_dbContext.MovieLikes.FirstOrDefault(x => x.Id == id));
     }
 
-    public MovieLike GetByMovieLikeId(int id)
+    public Task Update(MovieLike movieLike)
     {
-        throw new NotImplementedException();
+        _dbContext.Update(movieLike);
+        return _dbContext.SaveChangesAsync();
     }
 
-    public void Update(MovieLike movieLike)
+    public Task<IEnumerable<MovieLike>> FindAll()
     {
-        throw new NotImplementedException();
+        return Task.FromResult<IEnumerable<MovieLike>>(_dbContext.MovieLikes.ToList());
     }
 }

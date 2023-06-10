@@ -16,3 +16,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.tabletxt {
+    font-size: 12px;
+    color: white;
+}

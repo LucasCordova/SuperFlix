@@ -4,10 +4,9 @@ namespace App.Core.Interfaces;
 
 public interface IMovieLikeRepository
 {
-    IEnumerable<MovieLike> FindAll(); // Read
-    MovieLike GetByMovieLikeId(int id); // Read
-    void Update(MovieLike movieLike); // Update
-    void Add(MovieLike movieLike); // Create
-    void Delete(int movieLikeId);
+    Task<IEnumerable<MovieLike>> FindAll(); // Read
+    Task<MovieLike?> GetByMovieLikeId(int id); // Read
+    Task Update(MovieLike movieLike); // Update
+    Task Add(MovieLike movieLike); // Create
+    Task Delete(int movieLikeId);
 }
-

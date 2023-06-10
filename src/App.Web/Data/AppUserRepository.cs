@@ -1,5 +1,6 @@
 using App.Core.Entities.AppUserAggregate;
 using App.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace App.Web.Data;
 
@@ -12,33 +13,38 @@ public class AppUserRepository : IAppUserRepository
         _dbContext = dbContext;
     }
 
-    public IEnumerable<AppUser> FindAll()
+    public async Task<IEnumerable<AppUser>> FindAll()
     {
-        throw new NotImplementedException();
+        return await _dbContext.AppUsers.ToListAsync();
     }
 
-    public AppUser? GetByAppUserId(int id)
+    public async Task<AppUser?> GetByAppUserId(int id)
     {
-        throw new NotImplementedException();
+        return await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public AppUser? GetByIdentityUserId(string id)
+    public async Task<AppUser?> GetByIdentityUserId(string id)
     {
-        return _dbContext.AppUsers.FirstOrDefault(x => x.IdentityDbId == id);
+        return await _dbContext.AppUsers.FirstOrDefaultAsync(x => x.IdentityDbId == id);
     }
 
-    public void Update(AppUser appUser)
+    public Task Update(AppUser appUser)
     {
-        throw new NotImplementedException();
+        _dbContext.Update(appUser);
+        return Task.FromResult(_dbContext.SaveChangesAsync());
     }
 
-    public void Add(AppUser appUser)
+    public Task Add(AppUser appUser)
     {
-        throw new NotImplementedException();
+        _dbContext.AppUsers.Add(appUser);
+
+        return Task.FromResult(_dbContext.SaveChangesAsync());
     }
 
-    public void Delete(int appUserId)
+    public Task Delete(int appUserId)
     {
-        throw new NotImplementedException();
+        _dbContext.AppUsers.Remove(new AppUser { Id = appUserId });
+
+        return Task.FromResult(_dbContext.SaveChangesAsync());
     }
 }

@@ -1,4 +1,6 @@
 using App.Core.Interfaces;
+using App.Services;
+using App.Services.Interfaces;
 using App.Web.Data;
 using App.Web.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IMovieLikeRepository, MovieLikeRepository>();
 builder.Services.AddScoped<IAppUserRepository, AppUserRepository>();
+builder.Services.AddSingleton<IMovieClientService, MovieClientService>();
 
 //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
 //    .AddCookie();

@@ -23,8 +23,13 @@ public class MovieLikeRepository : IMovieLikeRepository
     public async Task Delete(int movieLikeId)
     {
         var movieLike = await GetByMovieLikeId(movieLikeId);
-        _dbContext.MovieLikes.Remove(movieLike);
-        await Task.FromResult(_dbContext.SaveChangesAsync());
+        if (movieLike != null)
+        {
+            _dbContext.MovieLikes.Remove(movieLike);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        await Task.CompletedTask;
     }
 
     public Task<MovieLike?> GetByMovieLikeId(int id)
@@ -35,7 +40,8 @@ public class MovieLikeRepository : IMovieLikeRepository
     public Task Update(MovieLike movieLike)
     {
         _dbContext.Update(movieLike);
-        return _dbContext.SaveChangesAsync();
+        _dbContext.SaveChangesAsync();
+        return Task.CompletedTask;
     }
 
     public Task<IEnumerable<MovieLike>> FindAll()

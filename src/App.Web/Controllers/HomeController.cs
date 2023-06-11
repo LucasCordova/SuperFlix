@@ -1,47 +1,58 @@
 ﻿using System.Diagnostics;
 using App.Core.Entities;
 using App.Core.Interfaces;
-using App.Services;
+using App.Services.Interfaces;
 using App.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.Controllers;
 
-public class HomeController : Controller
+public class HomeController : ControllerBase
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly IMovieLikeRepository _movieRepository;
-    private readonly IAppUserRepository _userRepository;
-
-    public HomeController(ILogger<HomeController> logger, IMovieLikeRepository movieRepository,
-        IAppUserRepository userRepository)
+    public HomeController(ILogger<HomeController> logger, IMovieClientService movieClientService,
+        IMovieLikeRepository movieRepository, IAppUserRepository userRepository)
+        : base(logger, movieClientService, movieRepository, userRepository)
     {
-        _logger = logger;
-        _movieRepository = movieRepository;
-        _userRepository = userRepository;
     }
 
     public async Task<IActionResult> Index(int? id)
     {
+        // User has liked a movie with this id. Add it to the user's liked movies in the database.
         if (id is not null)
         {
             var userId = User.Identity?.Name;
 
             if (userId is null) return Redirect("/Identity/Account/Login");
 
-            var appUser = await _userRepository.GetByIdentityUserId(userId);
+            var appUser = await UserRepository.GetByIdentityUserId(userId);
 
             if (appUser is { }) // same as app != null, app is not null
-                await _movieRepository.Add(new MovieLike { AppUserId = appUser.Id, MovieId = id.Value });
+            {
+                var movie = await MovieClientService.GetMovieById(id.Value);
+
+                await MovieLikeRepository.Add(
+                    new MovieLike
+                    {
+                        AppUserId = appUser.Id,
+                        MovieId = id.Value,
+                        OriginalLanguage = movie?.OriginalLanguage,
+                        Overview = movie?.Overview,
+                        PosterPath = movie?.PosterPath,
+                        ReleaseDate = movie?.ReleaseDate,
+                        Title = movie?.Title,
+                        VoteAverage = movie?.VoteAverage ?? 0
+                    });
+            }
         }
 
-        var movies = await MovieClient.GetPopularMovies();
-
         // Filter out the movies already liked
-        var likedMovieIds = (await _movieRepository.FindAll()).Select(m => m.MovieId);
-        var filteredMovies = movies?.results.Where(m => !likedMovieIds.Contains(m.id));
+        var likedMovieIds = (await MovieLikeRepository.FindAll()).Select(m => m.MovieId);
+        var popularMovies =
+            (await MovieClientService.GetPopularMovies())?
+            .TmdbMovieResults?.Where(
+                movie => !likedMovieIds.Contains(movie.Id));
 
-        return View(filteredMovies);
+        return View(popularMovies);
     }
 
     public IActionResult Privacy()

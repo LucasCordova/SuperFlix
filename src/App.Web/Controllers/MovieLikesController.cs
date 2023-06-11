@@ -1,20 +1,15 @@
 ﻿using App.Core.Interfaces;
+using App.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace App.Web.Controllers;
 
-public class MovieLikesController : Controller
+public class MovieLikesController : ControllerBase
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly IMovieLikeRepository _movieRepository;
-    private readonly IAppUserRepository _userRepository;
-
-    public MovieLikesController(ILogger<HomeController> logger, IMovieLikeRepository movieRepository,
-        IAppUserRepository userRepository)
+    public MovieLikesController(ILogger<HomeController> logger, IMovieClientService movieClientService,
+        IMovieLikeRepository movieLikeRepository,
+        IAppUserRepository userRepository) : base(logger, movieClientService, movieLikeRepository, userRepository)
     {
-        _logger = logger;
-        _movieRepository = movieRepository;
-        _userRepository = userRepository;
     }
 
     // GET: MovieLikes
@@ -24,11 +19,11 @@ public class MovieLikesController : Controller
 
         if (userId is null) return Redirect("/Identity/Account/Login");
 
-        var appUser = await _userRepository.GetByIdentityUserId(userId);
+        var appUser = await UserRepository.GetByIdentityUserId(userId);
 
         if (appUser is null) return NotFound();
 
-        var movieLikes = (await _movieRepository.FindAll()).Where(m => m.AppUserId == appUser.Id);
+        var movieLikes = (await MovieLikeRepository.FindAll()).Where(m => m.AppUserId == appUser.Id);
 
         return View(movieLikes);
     }
@@ -39,11 +34,11 @@ public class MovieLikesController : Controller
 
         if (userId is null) return Redirect("/Identity/Account/Login");
 
-        var appUser = await _userRepository.GetByIdentityUserId(userId);
+        var appUser = await UserRepository.GetByIdentityUserId(userId);
 
         if (appUser is null) return NotFound();
 
-        await _movieRepository.Delete(id);
+        await MovieLikeRepository.Delete(id);
 
         return RedirectToAction(nameof(Index));
     }

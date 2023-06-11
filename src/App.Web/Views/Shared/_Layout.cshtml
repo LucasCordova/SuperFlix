@@ -50,31 +50,15 @@
                             <!-- header nav -->
                             <ul class="header__nav">
                                 <li class="header__nav-item">
-                                    <a asp-controller="Home" asp-action="Index" class="header__nav-link">Home</a>
+                                    <a asp-controller="Home" asp-action="Index" class="header__nav-link">Popular Movies</a>
                                 </li>
                                 
                             @if (SignInManager.IsSignedIn(User))
                                 {
-                                    <a asp-controller="MovieLikes" asp-action="Index" class="header__nav-link">Movie Like</a>
+                                    <a asp-controller="MovieLikes" asp-action="Index" class="header__nav-link">My Liked Movies</a>
                                 }
 
-                                <!-- dropdown -->
-                                <li class="dropdown header__nav-item">
-                                    <a class="dropdown-toggle header__nav-link header__nav-link--more" href="#" role="button" id="dropdownMenuMore" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12,10a2,2,0,1,0,2,2A2,2,0,0,0,12,10ZM5,10a2,2,0,1,0,2,2A2,2,0,0,0,5,10Zm14,0a2,2,0,1,0,2,2A2,2,0,0,0,19,10Z" /></svg>
-                                    </a>
-
-                                    <ul class="dropdown-menu header__dropdown-menu" aria-labelledby="dropdownMenuMore">
-                                        @*<li><a href="about.html">About</a></li>
-                                        <li><a href="profile.html">Profile</a></li>
-                                        <li><a href="signin.html">Sign In</a></li>
-                                        <li><a href="signup.html">Sign Up</a></li>
-                                        <li><a href="forgot.html">Forgot password</a></li>
-                                        <li><a href="privacy.html">Privacy Policy</a></li>*@
-                                        @*<li><a href="404.html">404 Page</a></li>*@
-                                    </ul>
-                                </li>
-                                <!-- end dropdown -->
+                                
                             </ul>
                             <!-- end header nav -->
                             <!-- header auth -->

@@ -12,9 +12,9 @@ public class Tests
     [Test]
     public async Task TestGetPopularMoviesShouldReturnMovieRecords()
     {
-        var response = await MovieClient.GetPopularMovies();
+        var response = await new MovieClientService().GetPopularMovies();
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response!.results.Count, Is.Not.EqualTo(0));
+        Assert.That(response!.TmdbMovieResults!.Count, Is.Not.EqualTo(0));
     }
 }
